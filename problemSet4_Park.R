@@ -121,7 +121,7 @@ parsingOut <- function(file="~/GitHub/ProblemSet4/NetLogo.csv"){
   
    
   ## 3) Plots ##
-  # Set a new working directory
+  # Set a new working directory.
   setwd("C:/Users/Taeyong/Documents/GitHub/ProblemSet4/4JobTalk3.nlogo_10_05_2010_19.42.54.385_.0400/Plots")
 
   ## Create four sub-directories under the Plots directory.
@@ -129,6 +129,129 @@ parsingOut <- function(file="~/GitHub/ProblemSet4/NetLogo.csv"){
                 "PolarizationPlot", "IncumbentPercentagePlot"), 
         .fun=function(x) dir.create(path=x))
   
+  ## 3-1) PositionPlot ##
+  
+  # Set the directory.
+  setwd("PositionPlot")
+  
+  # Read in the column names.
+  positionNames <- scan(file=file, skip=8545, nlines=1, what=" ", sep=",", n=4) # We have four unique names. 
+  
+  ## First, we want to create a matrix that represents dimention 1.
+  D1 <- scan(file=file, skip=8546, nlines=169, what=" ", sep=",")
+  D1 <- matrix(D1, nrow=169, byrow=TRUE)
+  # There are no data after 24th columns; Drop them.
+  D1 <- D1[,-c(25:84)]
+  # We should find the average position of incumbent candidates (Red, Blue), activists, and voters.
+  # We see that each of items "Red", "Blue", "RedActivists", "RedVoters", "BlueVoters", and "BlueActivists" has four columns.
+  # Create matices for these items.
+  RedCandidates <- D1[,c(1:4)]
+  BlueCandidates<-D1[,c(5:8)]
+  RedActivists <- D1[,c(9:12)]  
+  RedVoters <- D1[,c(13:16)]
+  BlueVoters <- D1[,c(17:20)]
+  BlueActivists <- D1[,c(21:24)]
+  # Use the rbind function to combine these matrices and create one stacked data. 
+  D1 <- rbind(RedCandidates, BlueCandidates, RedActivists, RedVoters, BlueVoters, BlueActivists)
+  # Make a data frame and assign column names.
+  D1 <- data.frame(D1)
+  colnames(D1) <- positionNames
+  
+  # Add a new variable to D1 to categorize the data into six different items. 
+  D1$category <- c(rep("RedCandidates", 169), rep("BlueCandidates", 169), rep("RedActivists", 169),
+                  rep("RedVoters", 169), rep("BlueVoters", 169), rep("BlueActivists", 169))
+  # Write out a csv file
+  write.csv(D1, "D1.csv")
+  
+  ## Second, we want to create a matrix that represents dimention 2.
+  ## The same method can be used as D1.
+  D2 <- scan(file=file, skip=8730, nlines=169, what=" ", sep=",") # Skip 8730 rows since D2 starts at 8731st row.
+  D2 <- matrix(D2, nrow=169, byrow=TRUE)
+  # There are no data after 24th columns; Drop them.
+  D2 <- D2[,-c(25:84)]
+  # We should find the average position of incumbent candidates (Red, Blue), activists, and voters.
+  # We see that each of items "Red", "Blue", "RedActivists", "RedVoters", "BlueVoters", and "BlueActivists" has four columns.
+  # Create matices for these items.
+  RedCandidates <- D2[,c(1:4)]
+  BlueCandidates<-D2[,c(5:8)]
+  RedActivists <- D2[,c(9:12)]  
+  RedVoters <- D2[,c(13:16)]
+  BlueVoters <- D2[,c(17:20)]
+  BlueActivists <- D2[,c(21:24)]
+  # Use the rbind function to combine these matrices and create one stacked data. 
+  D2 <- rbind(RedCandidates, BlueCandidates, RedActivists, RedVoters, BlueVoters, BlueActivists)
+  # Make a data frame and assign column names.
+  D2 <- data.frame(D2)
+  colnames(D2) <- positionNames
+  
+  # Add a new variable to D1 to categorize the data into six different items. 
+  D2$category <- c(rep("RedCandidates", 169), rep("BlueCandidates", 169), rep("RedActivists", 169),
+                   rep("RedVoters", 169), rep("BlueVoters", 169), rep("BlueActivists", 169))
+  # Write out a csv file
+  write.csv(D2, "D2.csv")
+  
+  ##  Third, we want to create a matrix that represents dimention 2.
+  ## The same method can be used as D1 and D2.
+  D3 <- scan(file=file, skip=8914, nlines=169, what=" ", sep=",") # Skip 8914 rows since D2 starts at 8915th row.
+  D3 <- matrix(D3, nrow=169, byrow=TRUE)
+  # There are no data after 24th columns; Drop them.
+  D3 <- D3[,-c(25:84)]
+  # We should find the average position of incumbent candidates (Red, Blue), activists, and voters.
+  # We see that each of items "Red", "Blue", "RedActivists", "RedVoters", "BlueVoters", and "BlueActivists" has four columns.
+  # Create matices for these items.
+  RedCandidates <- D3[,c(1:4)]
+  BlueCandidates<-D3[,c(5:8)]
+  RedActivists <- D3[,c(9:12)]  
+  RedVoters <- D3[,c(13:16)]
+  BlueVoters <- D3[,c(17:20)]
+  BlueActivists <- D3[,c(21:24)]
+  # Use the rbind function to combine these matrices and create one stacked data. 
+  D3 <- rbind(RedCandidates, BlueCandidates, RedActivists, RedVoters, BlueVoters, BlueActivists)
+  # Make a data frame and assign column names.
+  D3 <- data.frame(D3)
+  colnames(D3) <- positionNames
+  
+  # Add a new variable to D1 to categorize the data into six different items. 
+  D3$category <- c(rep("RedCandidates", 169), rep("BlueCandidates", 169), rep("RedActivists", 169),
+                   rep("RedVoters", 169), rep("BlueVoters", 169), rep("BlueActivists", 169))
+  # Write out a csv file
+  write.csv(D3, "D3.csv")
+  
+  ## Finally, we want to include a PDF file plotting some meaningful and creative graphs.
+  ## We want to see how these quantities varied across the simulation.
+  ## Some might be interested in comparing variable "y" across candidates and voters or comparing variable "y" across candidates and activists.
+  
+  ## Let's do these excercises using each of D1, D2, and D3 data.
+  # Import the three data sets.
+  D1 <- read.csv("D1.csv")
+  D2 <- read.csv("D2.csv")
+  D3 <- read.csv("D3.csv")
+  # The output should be saved as a pdf file named "Positoins.pdf".
+  pdf("Positions.pdf", width=10, height=5, pointsize=10) # Set appropriate size of the output.
+  
+  # Start with the D1.
+  # First, investigate the average positions of the candidates and voters. 
+  voterCandidateD1 <- ggplot(data=subset(D1, category=="RedCandidates" | category== "RedVoters" | category == "BlueCandidates" | category=="BlueVoters"), 
+                           aes(x=x, y=y, colour=category)) + geom_point() + xlab("Simulation") + ylab("Avg. Position") + scale_colour_manual(name="", values=c("RedCandidates"="red", "RedVoters"="orange", "BlueCandidates"="blue", "BlueVoters"="skyblue")) + ggtitle("Voters-Candidates on D1")
+  # Second, investigate the average positions of the candidates and activists. 
+  voterActivistD1 <- ggplot(data=subset(D1, category=="RedCandidates" | category== "RedActivists" | category == "BlueCandidates" | category=="BlueActivists"), 
+                           aes(x=x, y=y, colour=category)) + geom_point() + xlab("Simulation") + ylab("Avg. Position") + scale_colour_manual(name="", values=c("RedCandidates"="red", "RedActivists"="violet", "BlueCandidates"="blue", "BlueActivists"="aquamarine")) + ggtitle("Activists-Candidates on D1")  
+ 
+  # Do the same exercises using D2.
+  voterCandidateD2 <- ggplot(data=subset(D2, category=="RedCandidates" | category== "RedVoters" | category == "BlueCandidates" | category=="BlueVoters"), 
+                           aes(x=x, y=y, colour=category)) + geom_point() + xlab("Simulation") + ylab("Avg. Position") + scale_colour_manual(name="", values=c("RedCandidates"="red", "RedVoters"="orange", "BlueCandidates"="blue", "BlueVoters"="skyblue")) + ggtitle("Voters-Candidates on D2")
+  voterActivistD2 <- ggplot(data=subset(D2, category=="RedCandidates" | category== "RedActivists" | category == "BlueCandidates" | category=="BlueActivists"), 
+                          aes(x=x, y=y, colour=category)) + geom_point() + xlab("Simulation") + ylab("Avg. Position") + scale_colour_manual(name="", values=c("RedCandidates"="red", "RedActivists"="violet", "BlueCandidates"="blue", "BlueActivists"="aquamarine")) + ggtitle("Activists-Candidates on D2")  
+  
+  # Do the same exercises using D3.
+  voterCandidateD3 <- ggplot(data=subset(D3, category=="RedCandidates" | category== "RedVoters" | category == "BlueCandidates" | category=="BlueVoters"), 
+                             aes(x=x, y=y, colour=category)) + geom_point() + xlab("Simulation") + ylab("Avg. Position") + scale_colour_manual(name="", values=c("RedCandidates"="red", "RedVoters"="orange", "BlueCandidates"="blue", "BlueVoters"="skyblue")) + ggtitle("Voters-Candidates on D3")
+  voterActivistD3 <- ggplot(data=subset(D3, category=="RedCandidates" | category== "RedActivists" | category == "BlueCandidates" | category=="BlueActivists"), 
+                          aes(x=x, y=y, colour=category)) + geom_point() + xlab("Simulation") + ylab("Avg. Position") + scale_colour_manual(name="", values=c("RedCandidates"="red", "RedActivists"="violet", "BlueCandidates"="blue", "BlueActivists"="aquamarine")) + ggtitle("Activists-Candidates on D3")  
+  # Use the grid.arrange function to make the outputs arranged.
+  grid.arrange(voterCandidateD1, voterActivistD1,
+               voterCandidateD2, voterActivistD2,
+               voterCandidateD3, voterActivistD3, ncol=2)
 
 } #End of parsingOut function
 
