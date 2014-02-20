@@ -130,8 +130,57 @@ parsingOut <- function(file="~/GitHub/ProblemSet4/NetLogo.csv"){
         .fun=function(x) dir.create(path=x))
   
 
+} #End of parsingOut function
+
+
+
+########## II. JMR Exercises ##########
+##Set the new directory.
+setwd("~/GitHub/ProblemSet4")
+
+### 1. Ch.4 Problem 3 ###
+
+# I created an R file that has the following code under the current directory.
+# The name of the R file is square_cube.R
+n <- 7
+
+cat("number     square      cube\n\n")
+for(i in 1:n){
+  square <- i^2
+  cube <- i^3
+  cat(format(i, width=6),
+      format(square, width=10),
+      format(cube, width=9),
+      "\n", sep="")
 }
 
+# Read the R file using source().
+source("square_cube.r")
+
+# We find that the results are the same as those in the book.
+number     square      cube
+
+1         1        1
+2         4        8
+3         9       27
+4        16       64
+5        25      125
+6        36      216
+7        49      343
+
+### 1. Ch.4 Problem 4 ###
+# I created an R file that has the following code under the current directory.
+# The name of the R file is mult_table.R
+mtable <- matrix(NA, 9, 9)
+for (i in 1:9){
+  for (j in 1:9){
+    mtable[i,j] <- i*j
+  }
+}
+show(mtable)
+
+# Read the file using the source function.
+source("mult_table.r") # I find the results that I should get.
 
 
 
