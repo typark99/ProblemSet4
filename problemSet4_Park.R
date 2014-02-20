@@ -219,7 +219,7 @@ parsingOut <- function(file="~/GitHub/ProblemSet4/NetLogo.csv"){
   
   ## Finally, we want to include a PDF file plotting some meaningful and creative graphs.
   ## We want to see how these quantities varied across the simulation.
-  ## Some might be interested in comparing variable "y" across candidates and voters or comparing variable "y" across candidates and activists.
+  ## We might be interested in comparing variable "y" across candidates and voters or comparing variable "y" across candidates and activists.
   
   ## Let's do these excercises using each of D1, D2, and D3 data.
   # Import the three data sets.
@@ -252,7 +252,46 @@ parsingOut <- function(file="~/GitHub/ProblemSet4/NetLogo.csv"){
   grid.arrange(voterCandidateD1, voterActivistD1,
                voterCandidateD2, voterActivistD2,
                voterCandidateD3, voterActivistD3, ncol=2)
-
+  dev.off() # Close the pdf device. 
+  
+  
+  ## 3-2) WinnersPlot ##
+  ## Set a new directory
+  setwd("C:/Users/Taeyong/Documents/GitHub/ProblemSet4/4JobTalk3.nlogo_10_05_2010_19.42.54.385_.0400/Plots")
+  setwd("WinnersPlot")
+  
+  ## First, create a csv file.
+  # Read the column names.
+  winnersNames <- scan(file=file, skip=9139, nlines=1, what=" ", sep=",", n=4) # Again, we have four unique names.
+  # Read 169 lines, since x= 0 ~ 168, and create a matrix.
+  winners <- scan(file=file, skip=9140, nlines=169, what=" ", sep=",")
+  winners <- matrix(winners, nrow=169, byrow=TRUE)
+  # Just as we did for the Position data, remove all the blank columns.
+  winners <- winners[,-c(13:84)] # We don't have any data after 12th columns.  
+  
+  # We have two categories of interest: Blue and Red. 
+  BlueCandidate <- winners[,c(1:4)]
+  RedCandidate <- winners[,c(9:12)]
+  # Combine these two data sets to make a stacked data frame and assign the column names.
+  winners <- rbind(BlueCandidate, RedCandidate)
+  winners <- data.frame(winners)  
+  colnames(winners) <- winnersNames
+  # Just as we did for the Position data, add a category variable to the data set.
+  winners$category <- c(rep("BlueCandidate", 169), rep("RedCandidate", 169))
+  # Write out a csv file
+  write.csv(winners, "Winner.csv")
+  
+  ## Second, we want to create a pdf file plotting meaningful graphs.
+  ## We might be interested in comparing ¡°y¡± that shows the percentage across Blue and Red candidates.
+  # Import the csv file.
+  winners <- read.csv("Winner.csv")
+  
+  pdf("Winner.pdf", width=7, height=7, pointsize=10) 
+  winnerPlot <- ggplot(winners, aes(x=x, y=y, colour=category)) + geom_point() +xlab("Time") + ylab("Percentage of winning") + scale_colour_manual(name="", values=c("BlueCandidate"="blue", "RedCandidate"="red"))
+  grid.arrange(winnerPlot)
+  dev.off()
+  
+  
 } #End of parsingOut function
 
 
