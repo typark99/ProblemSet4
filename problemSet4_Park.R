@@ -291,7 +291,58 @@ parsingOut <- function(file="~/GitHub/ProblemSet4/NetLogo.csv"){
   grid.arrange(winnerPlot)
   dev.off()
   
+  ## 3-3) Polarization
+  ## Set a new directory.
+  setwd("C:/Users/Taeyong/Documents/GitHub/ProblemSet4/4JobTalk3.nlogo_10_05_2010_19.42.54.385_.0400/Plots")
+  setwd("PolarizationPlot")
   
+  ## First, create a csv file.
+  # Read the column names.
+  polarizationNames <- scan(file=file, skip=9320, nlines=1, what=" ", sep=",", n=4) # Four unique names
+  # Use the same method to parse out the data as above.
+  polarization <- scan(file=file, skip=9321, nlines=169, what=" ", sep=",")
+  polarization <- matrix(polarization, nrow=169, byrow=TRUE)
+  polarization <- polarization[,-c(13:84)]
+  candidates <- polarization[,c(1:4)]
+  voters <- polarization[,c(5:8)]
+  activists <- polarization[,c(9:12)]
+  polarization <- rbind(candidates, voters, activists)
+  polarization <- data.frame(polarization)
+  colnames(polarization) <- polarizationNames
+  polarization$category <- c(rep("candidates", 169), rep("voters", 169), rep("activists", 169))
+  # Write out a csv file.
+  write.csv(polarization, "Polarization.csv")
+  
+  ## Second, create a pdf file.
+  # Import the data and plot a meaningful graph.
+  polarization <- read.csv("Polarization.csv")
+  pdf("PolarizationPlot.pdf", width=10)
+  polarizationPlot <- ggplot(polarization, aes(x=x, y=y, colour=category)) + geom_point() + xlab("Time") + ylab("Distance between the mean position")
+  grid.arrange(polarizationPlot, ncol=1)
+  dev.off()
+  
+  ## 3-4) IncumbentPercentage
+  ## Set a new directory.
+  setwd("C:/Users/Taeyong/Documents/GitHub/ProblemSet4/4JobTalk3.nlogo_10_05_2010_19.42.54.385_.0400/Plots")
+  setwd("IncumbentPercentagePlot")
+   
+  ## First, create a csv file.
+  # Read the column names
+  incumbentNames <- scan(file=file, skip=9499, nlines=1, what=" ", sep=",", n=4)
+  # Use the same method to parse out the data as above.
+  incumbent <- scan(file=file, skip=9500, nlines=169, what=" ", sep=",")
+  incumbent <- matrix(incumbent, nrow=169, byrow=TRUE)
+  incumbent <- incumbent[,c(1:4)] 
+  colnames(incumbent) <- incumbentNames
+  incumbent <- data.frame(incumbent)
+  write.csv(incumbent, "IncumbentWins.csv")
+  
+  ## Second, create a pdf file
+  incumbent <- read.csv("IncumbentWins.csv")
+  pdf("IncumbentWins.pdf")
+  incumbentPlot <- ggplot(incumbent, aes(x=x, y=y)) + geom_point() + xlab("Time") + ylab("Precentage of Winning")
+  grid.arrange(incumbentPlot, ncol=1)
+  dev.off()
 } #End of parsingOut function
 
 
@@ -317,18 +368,8 @@ for(i in 1:n){
 }
 
 # Read the R file using source().
-source("square_cube.r")
+source("square_cube.r") # I find the results that I should get.
 
-# We find that the results are the same as those in the book.
-number     square      cube
-
-1         1        1
-2         4        8
-3         9       27
-4        16       64
-5        25      125
-6        36      216
-7        49      343
 
 ### 1. Ch.4 Problem 4 ###
 # I created an R file that has the following code under the current directory.
@@ -345,4 +386,56 @@ show(mtable)
 source("mult_table.r") # I find the results that I should get.
 
 
+### 1. Ch.7 Problem 3 ###
 
+# Set a seed for reproductions.
+set.seed(0520)
+# Use rnorm function to generate 100 random values following the normal distribution having mean 160 sd 20, and make a data frame. 
+pop <- data.frame(m = rnorm(100, 160, 20), 
+                  f = rnorm(100, 160, 20))
+
+# Use the function appeared in the book. 
+next.gen <- function(pop){ # Input is the pop data frame.
+  pop$m <- sample(pop$m) # Randomly select 100 values.
+  pop$m <- apply(pop, 1, mean) # Apply the mean to the row.
+  pop$f <- pop$m 
+  return(pop) # Output is the pop data frame. 
+} 
+
+# Now, we want to gerate nine generations. 
+# Create an empty list.
+popList <- list()
+popList[[1]] <- pop # The first generation.
+# Use the next.gen function to generate 2-8 generations.
+for (i in 1:8){
+  popList[[i+1]] <- next.gen(popList[[i]])
+}
+
+# Now, we want to use the lattice package to plot the distribution of men's heights.
+# Create an empty list for men's height.
+popMen <- list()
+for (i in 1:9){
+  popMen[[i]] <- c(popList[[i]][,1])  # First column of popList indicates men's heights.
+}
+# Unlist the list and make a data frame for the plot. 
+popMen <- data.frame(unlist(popMen))
+colnames(popMen) <- "height"
+# Add a generation variable.
+popMen$generation <- rep(1:9, rep(100,9))
+
+# We loaded the lattice library. Use the histgram function.
+histogram(~ height | generation, data=popMen, layout=c(3,3))  # 3 by 3 matrix-like layout
+
+
+### 1. Ch.7 Problem 4 ###
+
+## To reproduce Figure 6.1, first install spuRs package
+install.packages("spuRs")
+library(spuRs)
+data(treeg)
+par(mfrow=c(1,1), mar=c(4,4,1,0.5))
+## We may use xyplot available from the lattice package . 
+xyplot(height.ft ~ age, data=treeg,
+       group=tree.ID, type="l",  # Use the group option to plot the lines in one graph.
+       xlab="height(feet)", ylab="age(years)",
+       main="Height against age for all 66 trees in the tree growth data")
